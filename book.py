@@ -1,4 +1,4 @@
-
+from datetime import datetime
 def read_data(file_name):
     data = []
     try:
@@ -29,19 +29,37 @@ def calculate_total_amount(venue_price, duration):
     final_amount = total_amount + vat_amount
     return total_amount, final_amount
 
-def write_bill(username, phone_number, address, venue, date, time, duration, total_amount, vat_amount, final_amount):
-    with open("rental_bill.txt", "w") as bill_file:
+
+def write_bill(username, phone_number, address, booked_venues, total_amount, vat_amount, final_amount):
+    now = datetime.now()
+    date_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Define the file name with the customer's name
+    file_name = f"rental_bill_{username}.txt"
+    
+    with open(file_name, "w") as bill_file:
         bill_file.write("Rental Bill\n\n")
+        bill_file.write(f"Date and Time: {date_time}\n")
         bill_file.write(f"Customer Name: {username}\n")
         bill_file.write(f"Phone Number: {phone_number}\n")
         bill_file.write(f"Address: {address}\n")
-        bill_file.write(f"Venue: {venue[1]}, {venue[2]} facing\n")
-        bill_file.write(f"Rental Date: {date} at {time}\n")
-        bill_file.write(f"Rental Period: {duration} months\n")
-        bill_file.write(f"Total Amount (excluding VAT): Rs.{total_amount}\n")
+        
+        # Write booked venues information
+        bill_file.write("\nBooked Venues:\n")
+        for venue in booked_venues:
+            venue_name = venue[0]
+            venue_city = venue[1]
+            venue_district = venue[2]
+            duration = venue[3]
+            bill_file.write(f"- Venue: {venue_name}, {venue_city}, {venue_district} facing\n")
+            bill_file.write(f"  Rental Period: {duration} months\n")
+        
+        # Write billing details
+        bill_file.write(f"\nTotal Amount (excluding VAT): Rs.{total_amount}\n")
         bill_file.write(f"VAT (15%): Rs.{vat_amount}\n")
         bill_file.write(f"Final Amount (including VAT): Rs.{final_amount}\n")
 
+    return file_name
 def main():
     file_name = 'land.txt'  # File containing venue data
     data = read_data(file_name)
@@ -57,15 +75,16 @@ def main():
     username = input("Enter your name: ")
     phone_number = input("Enter your phone number: ")
     address = input("Enter your address: ")
-    date = input("Enter the rental date (YYYY-MM-DD): ")
     time = input("Enter the rental time: ")
+    now =datetime.now()
+    date_time = now.strftime("%Y-%m-%d %H-%M-%S")
 
     total_amount, final_amount = calculate_total_amount(int(venue[4]), duration)
     vat_amount = final_amount - total_amount
 
     print("\nRental Details:")
     print(f"Venue: {venue[1]}, {venue[2]} facing")
-    print(f"Rental Date: {date} at {time}")
+    print(f"Rental Date: {date_time}")
     print(f"Rental Period: {duration} months")
     print(f"Username: {username}")
     print(f"Phone Number: {phone_number}")
@@ -74,8 +93,8 @@ def main():
     print(f"VAT (15%): Rs.{vat_amount}")
     print(f"Final Amount (including VAT): Rs.{final_amount}")
 
-    write_bill(username, phone_number, address, venue, date, time, duration, total_amount, vat_amount, final_amount)
-    print("Rental bill saved in 'rental_bill.txt'.")
+    write_bill(username, phone_number, address, venue, date_time, time, duration, total_amount, vat_amount, final_amount)
+    print(f"Rental bill saved in{username}'bill.txt'.")
 
 if __name__ == "__main__":
     main()
