@@ -12,6 +12,7 @@ def read_data(file_name):
 
 def display_options(data):
     print("Available venues:")
+
     for row in data[1:]:  # Skip the header row
         print(f"Kitta No.: {row[0]} - Location: {row[1]}, {row[2]} facing, Price: Rs.{row[4]}, Availability: {row[5]}")
 

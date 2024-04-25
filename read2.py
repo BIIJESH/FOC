@@ -38,8 +38,8 @@ def write_bill(username, phone_number, address, venue, duration, total_amount, v
     now = datetime.now()
     date_time = now.strftime("%Y-%m-%d %H:%M:%S")
     
-    with open("rental_bill.txt", "w") as bill_file:
-        bill_file.write("Rental Bill\n\n")
+    with open("rental_bill.txt", "a") as bill_file:  # Append mode to avoid overwriting
+        bill_file.write("\nRental Bill\n\n")
         bill_file.write(f"Date and Time: {date_time}\n")
         bill_file.write(f"Customer Name: {username}\n")
         bill_file.write(f"Phone Number: {phone_number}\n")
@@ -71,13 +71,11 @@ def main():
         vat_amount = final_amount - total_amount
 
         write_bill(username, phone_number, address, venue, duration, total_amount, vat_amount, final_amount)
-        print("Rental bill saved in 'rental_bill.txt'.")
 
         choice = input("Do you want to select another venue? (Y/N): ").upper()
-
         if choice != "Y":
+            print("Your bill has been issued and saved in 'rental_bill.txt'. Thank you!")
             break
-    print("Rental bill has been saved in 'rental_bill.txt")
 
 if __name__ == "__main__":
     main()
